@@ -1,4 +1,4 @@
-#CLUSTERING ON IRISI DATASET
+#Clustering - iris Data Set
 ?iris
 head(iris)
 library(dplyr)

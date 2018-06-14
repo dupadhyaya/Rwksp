@@ -1,5 +1,4 @@
-# Clustering
-# For Segmentation
+# Clustering For Customer Segmentation
 
 (age = ceiling(runif(50, 30, 50)))
 (income = ceiling(rnorm(50, 1000, 50)))
