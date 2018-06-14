@@ -1,10 +1,11 @@
-
-#Methods to handle objects
+#Various Functions on Data
+#Handle objects ----
 x = 1:5
+
+#Functions/ Methods applicable to Objects
 methods(class=class(x))
-
+#helps you know which function is applicable for which type of object
 methods(class=class(mtcars))
-
 
 #seq
 1:5
@@ -12,7 +13,7 @@ rev(x)
 match(5, x)
 
 
-#all combinations
+#all combinations---
 (df=expand.grid(x=c('A','B','C','D'), y=1:3))
 
 choose(6,4)
