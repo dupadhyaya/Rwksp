@@ -1,4 +1,5 @@
 # Regression Analysis
+# Simple Linear with 1 IV and 1 DV
 
 data(women)
 women

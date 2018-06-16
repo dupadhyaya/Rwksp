@@ -86,23 +86,23 @@ aggregate( cbnst ~ gender + br, data=df1, FUN=mean)
 #using dplyr package
 library(dplyr)
 
-#Top 2 students from each Branch 
+#Top 2 students from each Branch---- 
 df1 %>% select(br, sname, btechmarks) %>% group_by(br) %>% arrange(desc(btechmarks)) %>% top_n(n=2)
 
-# Average Fees Paid by Batch Yr
+# Average Fees Paid by Batch Yr----
 df1 %>% group_by(batchyr) %>% select(batchyr, feepaid) %>% summarize(mean_fees = mean(feepaid, na.rm = TRUE))
 
 names(df1)
-# Avg BTech Marks and Min Marks in Java : Group by Gender, Granch and Final Grade
+# Avg BTech Marks and Min Marks in Java : Group by Gender, Granch and Final Grade ----
 df1 %>% filter(finalgrade == 'A') %>% group_by(gender, br, finalgrade) %>% summarize(btechmks = mean(btechmarks, na.rm = TRUE), javamin = min(java, na.rm = TRUE))
 
-#Count by Gender
+#Count by Gender ----
 df1 %>%   group_by(gender) %>%  tally()
 
-#Filter by Final Grade = B : select only few columns
+#Filter by Final Grade = B : select only few columns ----
 df1 %>% filter(finalgrade == 'B') %>% select(rollno, sname, finalgrade)
 
-#sample : select few rows on randowm basis
+#sample : select few rows on randowm basis ----
 df1 %>% sample_frac(0.2, replace = TRUE)  %>% select(rollno, sname)  # % of Total
 df1 %>% sample_frac(0.2, replace = F)  %>% select(rollno, sname) # % of total : replace should be False to have non repeated rows
 df1 %>% sample_n(3, replace = F)  %>% select(rollno, sname) # select only 3 rows
