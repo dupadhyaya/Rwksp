@@ -1,68 +1,77 @@
 #Multiple Linear Regression 
 #Linear Modeling : DV vs more than 1 IVs
 #sales Qty vs price & promotion
+#Prerquistes - Lin Modeling, lm, output
 
 #Omni Store
 #creating data using Vector
-sales= c(4141,3842,3056,3519,4226, 4630,3507,3754, 5000,5120,4011, 5015,1916,675, 3636,3224,2295, 2730,2618,4421, 4113,3746, 3532, 3825,1096, 761,2088,820,2114, 1882,2159,1602,3354,2927)
+sqty= c(4141,3842,3056,3519,4226, 4630,3507,3754, 5000,5120,4011, 5015,1916,675, 3636,3224,2295, 2730,2618,4421, 4113,3746, 3532, 3825,1096, 761,2088,820,2114, 1882,2159,1602,3354,2927)
 price = c(59,59,59,59,59,59,59,59,59,59,59,59,79,79,79,79,79,79,79,79,79, 79,79,79,99,99, 99,99,99,99,99,99,99,99)
 promotion= c(200,200,200,200,400,400,400,400, 600,600,600,600,200,200,200,200, 400,400,400,400,600,600,600,600, 200,200,200,200,400,400,400,400,600,600)
-omni1 = data.frame(sales, price, promotion)
-head(omni1)
-str(omni1)
-# find change in Qty for 1 unit change in price
-# ..... for 1 unit change in promotion
+sales1 = data.frame(sqty, price, promotion)
+head(sales1)
+str(sales1)
+# find change in Sales Qty for 1 unit change in price and promotion
 
+#2nd Method : CSV file : file not in project folder
+sales2 = read.csv(file.choose())
 
-#2nd Method : CSV file
-omni2 = read.csv(file.choose())
-
-#3rd Method : gsheet 
+#3rd Method : gsheet library
 library(gsheet)
 url = "https://docs.google.com/spreadsheets/d/1h7HU0X_Q4T5h5D1Q36qoK40Tplz94x_HZYHOJJC_edU/edit#gid=1595306231"
-omni3 = as.data.frame(gsheet::gsheet2tbl(url))
+sales3 = as.data.frame(gsheet::gsheet2tbl(url))
+str(sales3)
+
+#4th Method : CSV file : file in project folder
+sales4 = read.csv('./data/salesqty.csv')
+str(sales4)
+
+sapply(list(sales1,sales2,sales3, sales4), dim)
+sapply(list(sales1,sales2,sales3, sales4), names)
 
 #Make one of data frames active
-omni = omni1
-head(omni)
+sales = sales1
+head(sales)
 
 ?lm  #see help of LM
 #Simple Linear Model would look like this
-slr1 = lm(formula = sales ~ price, data=omni) # sales depend on price of item
-slr2 = lm(formula = sales ~ promotion, data=omni) # sales depend on promotion exp
+slr1 = lm(formula = sqty ~ price, data=sales) # sales depend on price of item
 summary(slr1)
+
+slr2 = lm(formula = sqty ~ promotion, data=sales) # sales depend on promotion exp
 summary(slr2)
+AIC(slr1, slr2)  # slr1 better with 1 IV
 
 
 #MLR  Create Multiple Linear Regression
 # we want to see how Sales Qty depend on Price and Promotion Values
-mlrmodel1 = lm(sales ~ price + promotion, omni)
-#mlrmodel1 = lm(omni, sales ~ price + promotion)
-?lm
+mlrmodel1 = lm(sqty ~ price + promotion, sales)
 
 #how to give parameter values in different sequence, use arguments names if in different order
-mlrmodel1 = lm( data=omni, formula = sales ~ price + promotion)
+mlrmodel1a = lm( data=sales, formula = sqty ~ price + promotion)
 
-range(omni$sales)
+
+range(sales$sqty)  # range of sales qty
 summary(mlrmodel1)  # summary statistics IMP STEP
 #understand values : R2, AdjR2, Fstats pvalue, Coeff, ***, Residuals
 
 coef(mlrmodel1) #coefficients b1, b2
 #anova(mlrmodel1) #seeing from anova model
 attributes(mlrmodel1)
-head(omni)
+head(sales)
 
-plot(y=omni$sales, x=omni$promotion)
+#coplot(sqty ~ price | promotion, data=sales)
+
 
 #Predicted Values----
-dim(omni)
+dim(sales)
 fitted(mlrmodel1)  #predicted values for various input combinations of IV
-cbind(omni, fitted(mlrmodel1), residuals(mlrmodel1))
+cbind(sales, fitted(mlrmodel1), residuals(mlrmodel1))
 summary(mlrmodel1)
 coef(mlrmodel1)
 5837 + 59 * -53 + 200 * 3.651
 names(omni)
-range(omni$price); range(omni$promotion)
+range(sales$price); range(sales$promotion)
 #create a dataframe of new sample values
 (ndata1 = data.frame(price=c(69,98), promotion=c(500,559)))
 predict(mlrmodel1, newdata=ndata1)
@@ -78,7 +87,7 @@ summary(mlrmodel1)$r.squared
 #Manual Calculation of Adjs R2
 (r2 = summary(mlrmodel1)$r.squared)
 k = 2 # no of IVs
-(n = nrow(omni)) # sample size
+(n = nrow(sales)) # sample size
 (adjr2 = 1 - ( (1 - r2) * ((n - 1)/ (n - k - 1))))
 
 
@@ -95,12 +104,12 @@ pf(fstat[1], fstat[2], fstat[3], lower.tail=FALSE)
 # this is  < 0.05 : Significant
 # 
 
-#Plots of the Modle
+#Plots of the Model
 plot(mlrmodel1,1)  # no pattern, equal variance
 plot(mlrmodel1,2)  # Residues are normally distributed
 plot(mlrmodel1,3)
 plot(mlrmodel1,4)  # tells outliers which affect model
-
+#most significant is row 14
 
 # Confidence Intervals
 
@@ -109,7 +118,7 @@ plot(mlrmodel1,4)  # tells outliers which affect model
 fitted(mlrmodel1)
 residuals(mlrmodel1) 
 mlrmodel1$residuals
-cbind(omni$sales, fitted(mlrmodel1), omni$sales - fitted(mlrmodel1), residuals(mlrmodel1))
+cbind(sales$sqty, fitted(mlrmodel1), sales$sqt - fitted(mlrmodel1), residuals(mlrmodel1))
 
 #sqrt(sum((residuals(mlrmodel1)^2)))
 names(mlrmodel1)
@@ -123,26 +132,35 @@ summary(mlrmodel1)
 cbind(fitted(mlrmodel1), residuals(mlrmodel1))
 plot(cbind(fitted(mlrmodel1), residuals(mlrmodel1)))
 #not quadratic
-plot(cbind(omni$price, residuals(mlrmodel1)))
-plot(cbind(omni$promotion, residuals(mlrmodel1)))
+plot(cbind(sales$price, residuals(mlrmodel1)))
+plot(cbind(sales$promotion, residuals(mlrmodel1)))
 #May indicate quadratic term of IVs
 
 
 #Train and Test Data
-
+#since this data is small full data is used for train and test
+#otherwise train = 70% of data
 
 # RMSE
+library(Metrics)
+mlrmodel1
+rmse(sales$sqty, fitted(mlrmodel1))
 
+slr1
+rmse(sales$sqty, fitted(slr1))
+slr2
+rmse(sales$sqty, fitted(slr2))
 
+AIC(mlrmodel1, slr1, slr2)
+#Which is best prediction model - with price and promotion
 
-
-
-omni
-names(omni)
-mlr2 = lm(sales ~ price + promotion, data= omni)
+# Extra: Predict for other ranges
+head(sales) ; names(sales)
+mlr2 = lm(sqty ~ price + promotion, data= sales)
 summary(mlr2)
 new1=data.frame(price=60:70, promotion=400)
 predict(mlr2, newdata = new1)
-cbind(new1,predict(mlr2, newdata = new1) )
+#summary of IV values and predicted values
+cbind(new1,predict2 = predict(mlr2, newdata = new1) )
 
 
