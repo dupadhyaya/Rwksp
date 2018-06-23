@@ -39,10 +39,12 @@ plot(y=df$Y, x=df$X,xlab='Area in sqft', ylab='Sales Amount', type='p', ylim=c(0
 
 abline(lm(df$Y ~ df$X), lty=3, lwd=4, col='green') # with regression line
 abline(v=c(3,5),h=c(6,10), col=c('red','blue')) # few straight lines at x & y axis
+
 #Model
 fit1 = lm(Y ~ X, data=df) # create Simple Linear Model Y wrt X
 fit1
 summary(fit1)
+
 fitted(fit1) # predicted values for all X in orginal data
 residuals(fit1)
 

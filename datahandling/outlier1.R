@@ -12,12 +12,16 @@ boxplot(marks1)
 abline(h=q1, col=1:6)
 text(1, q1+2, labels=c('min','1Q','median','3Q','max'), col=1:5)
 title(main='Marks1')
+IQR(marks1)
 
 boxplot(marks2)
 (q2= quantile(marks2, c(.0,.25,.50,.75,1)))
 abline(h=q2, col=1:6)
 text(1, q2+2, labels=c('min','1Q','median','3Q','max'), col=1:5)
 title(main='Marks2')
+
+marks2
+marks2[-82]
 
 mean(marks1); mean(marks2)  # diff in means due to outlier
 ; mean(marks2, trim=.1)# trim extreme values

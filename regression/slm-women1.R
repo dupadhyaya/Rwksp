@@ -1,6 +1,7 @@
 #Simple Linear Regression 
 #Predicting on variable only  : DV
 
+
 data(women)
 str(women)
 

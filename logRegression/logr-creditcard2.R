@@ -6,6 +6,7 @@ library(ISLR)   #install the package
 ?Default   # data set
 # Load in the credit data
 data("Default")
+# See the properties
 str(Default)
 class(Default)
 head(Default)
@@ -15,14 +16,22 @@ summary(Default)
 
 # How many people actual default?
 (tmp = table(Default$default))
-333/10000
-table(Default$default, Default$student)
+paste(333/10000,' people default in payment of credit card')
+#How many student default
+?table
+table(Default$default, Default$student, dnn=c("default","students"))
+ftable(Default$default, Default$student)
+t1= table(Default$default, Default$student, dnn=c("default","students"))
+addmargins(t1)
 table(Default$student)
+
+
 ?glm
 #Multiple Logistic Regression
 logit1 = glm(default ~ income + balance + student, family='binomial', data=Default)
 summary(logit1)
 exp(coef(logit1))
+#No Rs
 #income is not significant - remove it
 
 logit2 = glm(default ~ balance + student, family='binomial', data=Default)
@@ -35,6 +44,7 @@ anova(logit2, logit1)
 head(Default)
 seq(1, 10000,500)
 Default[c(1,501),]
+
 ndata1= Default[seq(1, 10000,500),]
 ndata1
 nrow(Default[seq(1, 10000,500),])
@@ -52,7 +62,7 @@ addmargins(prop.table(table(Default$default,Default$student)))
 options(digits=10)
 
 fitted.results = predict(logit2, newdata=ndata,type='response')
-fitted.results
+fitted.results = round(fitted.results,4)
 head(fitted.results)
 fitted.results
 cbind(ndata, fitted.results)
@@ -66,7 +76,7 @@ ifelse(fitted.results < 0.05, 0,1)
 
 (ndata2 = data.frame(student=c('Yes','No'), balance=mean(Default$balance), income=mean(Default$income)))
 (fitted.results2 <- predict(logit2, newdata=ndata2,type='response'))
-
+cbind(ndata2, fitted.results2)
 
 Default
 xtabs( ~ default + student, data=Default)

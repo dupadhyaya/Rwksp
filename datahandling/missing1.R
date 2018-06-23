@@ -3,12 +3,16 @@
 
 (v1 = c(1,2,NA,NA,5))
 is.na(v1)
+anyNA(v1)
 v1=NULL
 v1  # remove all values
 (v1 = c(1,2,NA,NA,5))
+sum(c(T,T,F))
 sum(is.na(v1))  # sum TRUE values ie missing values
+v = 1:10; mean(v)
 mean(v1)  # cannot calculate if NA values in vector
 mean(v1, na.rm=T)  # remove and calc
+mean(c(1,2,5))
 (v1a = na.omit(v1))  # omit missing values and put in new vector
 sum(v1a) # now you can sum on non NA values
 ?na.omit
@@ -26,9 +30,11 @@ v1
 #Use VIM package to load sleep dataset with NA values in rows & col
 library(VIM)
 data(sleep, package='VIM')
+?sleep
 summary(sleep)# see NA values in cols
 head(sleep)
 dim(sleep)
+
 complete.cases(sleep) #all complete rows without any missing values
 sum(complete.cases(sleep)) # count non NA rows/ complete 42
 sum(!complete.cases(sleep))  #count NA rows 20

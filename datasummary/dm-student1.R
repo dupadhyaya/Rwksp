@@ -23,7 +23,6 @@ attributes(df1)
 attr(df1, which='spec') = NULL
 #names(df1) = colnames
 str(df1)
-
 #class of each column
 class(df1$gender)
 sapply(df1, class)
