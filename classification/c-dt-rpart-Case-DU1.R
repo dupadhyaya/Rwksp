@@ -2,8 +2,8 @@
 # Creating Decision Tree
 #install packages - rpart, rpart.plot, RColorBrewer
 
-library(rpart)
-library(rpart.plot)
+library(rpart)# doing classification
+library(rpart.plot) # visualising the tree
 
 #Students : Gender - (Male & Female) buy a product
 #Rownames
@@ -17,8 +17,8 @@ head(gender)
 table(gender)
 
 #Variable- Buy : Decision
-set.seed(3000)
-buy = sample(x=c('Buy','NotBuy'), size=1000, replace=T, prob=c(.49,.51) )
+set.seed(100)
+buy = sample(x=c('Buy','NotBuy'), size=1000, replace=T, prob=c(.41,.59) )
 head(buy)
 table(buy)
 prop.table(table(buy))
@@ -39,8 +39,13 @@ addmargins(t1)
 prop.table(table(students1$gender, students1$buy))
 addmargins(prop.table(table(students1$gender, students1$buy))
 )
+
 #Model1
 head(students1)
+fit = rpart(buy ~ gender, data= students1)
+fit
+rpart.plot(fit,nn=T)
+
 fit1 = rpart(buy ~ gender, data=students1, minsplit=4, minbucket=2)
 #'minsplit' is min 4 obsv reqd to split a node
 #'minbucket' determines the minimal number of observations per leaf ('minbucket') 
