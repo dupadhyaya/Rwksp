@@ -2,6 +2,7 @@
 #multisplit
 # require(rsample) # for dataset and splitting also loads broom and tidyr
 require(dplyr);require(ggplot2);theme_set(theme_bw()) ;require(CHAID); require(purrr) ; require(caret)
+#install.packages("CHAID", repos="http://R-Forge.R-project.org")
 library(CHAID)  #library for performing CHAID decision tree
 #Dataset
 data(USvote)
