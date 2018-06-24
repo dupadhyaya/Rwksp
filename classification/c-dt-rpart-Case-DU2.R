@@ -1,9 +1,8 @@
 # # Finding how people take decisions to buy products
 # Creating Decision Tree
-#install packages - rpart, rpart.plot, RColorBrewer
 
-library(rpart)# doing classification
-library(rpart.plot) # visualising the tree
+library(rpart)
+library(rplart.plot)
 
 #Students : Gender - (Male & Female) buy a product
 #Rownames
@@ -17,8 +16,8 @@ head(gender)
 table(gender)
 
 #Variable- Buy : Decision
-set.seed(100)
-buy = sample(x=c('Buy','NotBuy'), size=1000, replace=T, prob=c(.41,.59) )
+set.seed(3000)
+buy = sample(x=c('Buy','NotBuy'), size=1000, replace=T, prob=c(.49,.51) )
 head(buy)
 table(buy)
 prop.table(table(buy))
@@ -27,8 +26,6 @@ prop.table(table(buy))
 students1 = data.frame(gender, buy)
 rownames(students1) = rollno
 head(students1)
-
-xtabs(~ gender + buy,data = students1)
 
 #Table
 table(students1)
@@ -39,36 +36,24 @@ addmargins(t1)
 prop.table(table(students1$gender, students1$buy))
 addmargins(prop.table(table(students1$gender, students1$buy))
 )
-
 #Model1
-head(students1)
-fit = rpart(buy ~ gender, data= students1)
-fit
-rpart.plot(fit,nn=T)
-
-fit1 = rpart(buy ~ gender, data=students1, minsplit=4, minbucket=2)
-#'minsplit' is min 4 obsv reqd to split a node
-#'minbucket' determines the minimal number of observations per leaf ('minbucket') 
-
+fit1 = rpart(buy ~ gender, data=students1,minsplit=4, minbucket=2)
+#'minsplit' is 20 and determines the minimal number of observations per leaf ('minbucket') 
 fit1  #print(fit1)
-
 table(students1$gender, students1$buy)
 head(students1)
 library(rpart.plot)
 rpart.plot(fit1, main='Classification Tree', nn=T, type=4, extra=104)
 
 fit1
-
 predict(fit1, newdata = data.frame(gender='Female'))
-
 predict(fit1, newdata = data.frame(gender='Female'), type=c('class'))
 predict(fit1, newdata = data.frame(gender=c('Male','Female','Male')), type='class')
 
-#---- Part -2 Add another column----
-set.seed(1234)
-married = sample(x=c('Married','Single'), size=1000, replace=T, prob=c(0.6,0.4) )
+#---- Part -2 Add another column
+set.seed(5000)
+married = sample(x=c('Married','Single'), size=1000, replace=T, prob=c(0.5,0.5) )
 table(married)
-#new data frame
 students2 = data.frame(gender, married, buy)
 rownames(students2) = rollno
 head(students2)
@@ -80,7 +65,6 @@ addmargins(prop.table(table(students2)))
 
 # Model2
 #library(rpart)
-names(students2)
 fit2 = rpart(buy ~ gender + married, data=students2, minsplit=12)
 summary(fit2)
 fit2
@@ -95,12 +79,15 @@ prp(fit2, main="An Example",
     extra=101, under=T, lt=" < ", ge=" >= ", cex.main=1.5)
 
 prp(fit2, branch.type=5)
-labels(fit2)
 
+labels(fit2)
+#Interactive
+new.tree <- prp(fit2, snip=TRUE)$obj # interactively trim the tree
+prp(new.tree) # display the new tree
 
 #Plot----
 library(RColorBrewer)
-
+#library(rattle)
 
 rpart.plot::rpart.plot(fit2, main='Classification Tree')
 rpart.plot::rpart.plot(fit2, extra=104, box.palette="GnBu", branch.lty=3, shadow.col="gray", nn=TRUE)
@@ -110,12 +97,11 @@ prp(fit2, type=2)
 
 
 #Predict
-#
+prop.table(ftable(students2))
 predict(fit2, newdata = data.frame(gender='Male', married='Married'), type='prob')
 predict(fit2, newdata = data.frame(gender='Male', married='Married'), type='class')
-predict(fit2, newdata = data.frame(gender='Male', married='Married'), type='vector')
-
-predict(fit2, newdata = data.frame(gender='Male', married='Married'))
+predict(fit2, newdata = data.frame(gender='Male', married='Married'), type='vector')# 1- Buy, 2-NotBuy
+predict(fit2, newdata = data.frame(gender='Male', married='Single'), type='vector')
 ?predict
 
 
@@ -143,13 +129,70 @@ fit2$where  #which row at which nodeno
 
 students2[1:5,]
 cbind(students2, nodeno=rownames(fit2$frame) [ fit2$where])
-fit2
-rpart.plot(fit2)
 pfit=  prune(fit2, cp=0.02) # from cptable  
 pfit
 rpart.plot(pfit)
 
-#Interactive----
-new.tree <- prp(fit2, snip=TRUE)$obj # interactively trim the tree
-prp(new.tree) # display the new tree
-#click on quit 
+#do some changes to pfit
+
+#--------------------------------------------------------
+
+#add column with 3 classes and numeric and logical
+set.seed(105)
+education = sample(x=c('school','graduate', 'pg'), size=1000, replace=T, prob=c(0.3,0.4,.3) )
+education; table(education)
+set.seed(106)
+hostel = sample(x=c(TRUE, FALSE), size=1000, replace=T, prob=c(.3,.7))
+table(hostel)
+set.seed(107)
+marks = floor(runif(1000,50,100))
+mean(marks)
+students3 = data.frame(gender, married, education, hostel,marks,buy)
+with(students3, ftable(education, hostel, gender, married,buy))
+
+# Model3
+fit3a = rpart(buy ~ ., data=students3)
+fit3a
+rpart.plot::rpart.plot(fit3a, main='Classification Tree')
+
+#Model3b : change some parameters minbucket, minsplit
+fit3b = rpart(buy ~ ., data=students3, minsplit=4, minbucket=2) #control= rpart.control(cp=0.00001))#use low cp
+fit3b
+rpart.plot::rpart.plot(fit3b, main='Classification Tree', cex=.6, type=3, extra=104, nn=T)
+rpart.plot::prp(fit3b)
+#rattle::fancyRpartPlot(model = fit3b, main = "Final CART Regression Tree", cex = 0.6, sub = "Model3")
+prp(fit3b,box.col=c("Grey", "Orange")[fit3b$frame$yval],varlen=0,faclen=0, type=1,extra=4,under=TRUE, tweak=1.2)
+
+
+#Lets see CP
+plotcp(fit3b)
+printcp(fit3b)
+(bestcp= fit3b$cptable[which.min(fit3b$cptable[,'xerror']),'CP'])
+#but this is at root node only, select next better 
+bestcp = 0.01
+p3b = prune(fit3b, cp=0.015)
+rpart.plot(p3b)
+
+prp(fit3b)
+fit3b2 = rpart(buy ~ ., data=students3, minsplit=4, minbucket=2, control= rpart.control(cp=0.001))
+fit3b2
+prp(fit3b2)
+fit3b.pruned = prune(fit3b, cp=bestcp)
+fit3b.pruned
+prp(fit3b.pruned)
+
+rpart.plot(fit3b.pruned,cex=.6, extra=101, type=1)
+
+
+#Predict Model3
+fit3b.pruned$where
+fit3b.pruned
+path.rpart(fit3b.pruned, nodes=c(1,4,10,43), pretty = 0, print.it = TRUE)
+testdata1= data.frame(gender='Male', married='Married', education='school', hostel=TRUE, marks=60)
+testdata1
+predict(fit3b.pruned, newdata = testdata1 )
+
+  
+
+# now practise with Marketing Data
+
