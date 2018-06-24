@@ -1,8 +1,9 @@
 # # Finding how people take decisions to buy products
 # Creating Decision Tree
+#install packages - rpart, rpart.plot, RColorBrewer
 
 library(rpart)
-library(rplart.plot)
+library(rpart.plot)
 
 #Students : Gender - (Male & Female) buy a product
 #Rownames
@@ -41,7 +42,8 @@ addmargins(prop.table(table(students1$gender, students1$buy))
 #Model1
 head(students1)
 fit1 = rpart(buy ~ gender, data=students1, minsplit=4, minbucket=2)
-#'minsplit' is 20 and determines the minimal number of observations per leaf ('minbucket') 
+#'minsplit' is min 4 obsv reqd to split a node
+#'minbucket' determines the minimal number of observations per leaf ('minbucket') 
 
 fit1  #print(fit1)
 
@@ -87,14 +89,11 @@ prp(fit2, main="An Example",
 
 prp(fit2, branch.type=5)
 labels(fit2)
-#Interactive
 
-new.tree <- prp(fit2, snip=TRUE)$obj # interactively trim the tree
-prp(new.tree) # display the new tree
 
 #Plot----
 library(RColorBrewer)
-#library(rattle)
+
 
 rpart.plot::rpart.plot(fit2, main='Classification Tree')
 rpart.plot::rpart.plot(fit2, extra=104, box.palette="GnBu", branch.lty=3, shadow.col="gray", nn=TRUE)
@@ -142,3 +141,8 @@ rpart.plot(fit2)
 pfit=  prune(fit2, cp=0.02) # from cptable  
 pfit
 rpart.plot(pfit)
+
+#Interactive----
+new.tree <- prp(fit2, snip=TRUE)$obj # interactively trim the tree
+prp(new.tree) # display the new tree
+#click on quit 

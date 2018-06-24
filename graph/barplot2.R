@@ -3,8 +3,7 @@
 heights1 = c(5, 5, 4.5, 4, 4, 4, 4.5, 2, 4, 4) # Your data
 mydata <- matrix(heights1, ncol = 2, byrow = TRUE,
      dimnames = list(c("Spanish", "English", "Hindi", 
-     "Arabic", "Body Lang"),
-       c("Reading/Writing", "Speaking")))
+     "Arabic", "Body Lang"), c("Reading/Writing", "Speaking")))
 #matrix( ,  , , list(rowname,s colnames))
 colors <- c("darkblue", "red") # Define the colors you're using
 
