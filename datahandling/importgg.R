@@ -2,6 +2,7 @@
 #install.packages('gsheet')
 library(gsheet)
 
+#Method1----
 regr1 = "https://docs.google.com/spreadsheets/d/1QogGSuEab5SZyZIw1Q8h-0yrBNs1Z_eEBJG7oRESW5k/edit#gid=107865534"
 
 logr1 = "https://docs.google.com/spreadsheets/d/1QogGSuEab5SZyZIw1Q8h-0yrBNs1Z_eEBJG7oRESW5k/edit#gid=560796239"
@@ -15,7 +16,8 @@ summary(df2)
 
 
 
-#
+# Method2----
+library(gsheet)
 docurl = "https://docs.google.com/spreadsheets/d/"
 sheeturl = paste0("1QogGSuEab5SZyZIw1Q8h-0yrBNs1Z_eEBJG7oRESW5k","/edit#gid=")
 sheetname = "560796239"

@@ -1,8 +1,8 @@
 # CART Models - Regression Trees - Merchent Sales
 #Predict the mean sales from the data; create decision tree
-library(rpart)
-library(rpart.plot)
-library(forecast)
+library(rpart)  # CART algo
+library(rpart.plot)# visualising decision tree
+library(forecast)# calculating accuracy
 
 msales = read.csv(file = "./data/msales.csv", skip=1, header = T)
 dim(msales)
@@ -12,7 +12,7 @@ str(msales)
 # See Summary values of sales
 aggregate(msales$sales,by=list(msales$zone), FUN = mean)
 
-# Random Sampling
+# Random Sampling : Train and Test
 set.seed(777) # To ensure reproducibility
 Index = sample(x = 1:nrow(msales), size = 0.7*nrow(msales))
 Index
@@ -53,6 +53,8 @@ CartModel_1 = rpart(sales ~ ., data = msales[,-1],
 CartModel_1
 
 CartModel_1$where
+msales[987,'sales']
+CartModel_1$frame
 trainingnodes = rownames(CartModel_1$frame) [ CartModel_1$where]
 trainingnodes
 
@@ -68,6 +70,7 @@ PredictTest1=predict(CartModel_1,newdata=test,type="vector")
 PredictTest1
 length(PredictTest)
 msales[2,'sales']
+cbind(test$sales, PredictTest, PredictTest1)
 
 # Calculate RMSE and MAPE 
 library(forecast)

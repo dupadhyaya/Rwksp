@@ -31,7 +31,8 @@ clust2$cluster
 combined2 = cbind(df2, clust2$cluster)
 head(combined2)
 plot(x=df2$age, y=df2$income, col=clust2$cluster, pch=c(11,12,14,17))
-df2[clust2$cluster==2,]
+df2
+df2[clust2$cluster==3,]
 
 
 
