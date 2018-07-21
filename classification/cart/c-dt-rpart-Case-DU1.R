@@ -44,6 +44,7 @@ addmargins(prop.table(table(students1$gender, students1$buy))
 head(students1)
 fit = rpart(buy ~ gender, data= students1)
 fit
+
 rpart.plot(fit,nn=T)
 
 fit1 = rpart(buy ~ gender, data=students1, minsplit=4, minbucket=2)
@@ -81,7 +82,7 @@ addmargins(prop.table(table(students2)))
 # Model2
 #library(rpart)
 names(students2)
-fit2 = rpart(buy ~ gender + married, data=students2, minsplit=12)
+fit2 = rpart(buy ~ gender + married, data=students2, minsplit=10, cp=-1)
 summary(fit2)
 fit2
 rpart.plot(fit2,type=2,extra=104, tweak=1.2, under=T, shadow=c('brown', 'green','red'), nn=T)
@@ -100,8 +101,6 @@ labels(fit2)
 
 #Plot----
 library(RColorBrewer)
-
-
 rpart.plot::rpart.plot(fit2, main='Classification Tree')
 rpart.plot::rpart.plot(fit2, extra=104, box.palette="GnBu", branch.lty=3, shadow.col="gray", nn=TRUE)
 
@@ -110,14 +109,12 @@ prp(fit2, type=2)
 
 
 #Predict
-#
+
 predict(fit2, newdata = data.frame(gender='Male', married='Married'), type='prob')
 predict(fit2, newdata = data.frame(gender='Male', married='Married'), type='class')
 predict(fit2, newdata = data.frame(gender='Male', married='Married'), type='vector')
 
 predict(fit2, newdata = data.frame(gender='Male', married='Married'))
-?predict
-
 
 testdata = data.frame(gender=c('Male','Male','Female','Female'), married=c('Married','Single','Married','Single'))
 testdata
@@ -139,7 +136,7 @@ getOption('digits')
 plotcp(fit2)
 names(fit2)
 
-fit2$where  #which row at which nodeno
+fit2$where  #which row at which node no
 
 students2[1:5,]
 cbind(students2, nodeno=rownames(fit2$frame) [ fit2$where])
